@@ -23,7 +23,7 @@ function isFireStoreError(
 
 function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [currentMonth, serCurrentMonth] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const a = format(currentMonth, "yyyy-MM");
 
   useEffect(() => {
@@ -32,8 +32,6 @@ function App() {
         const querySnapshot = await getDocs(collection(db, "Transactions"));
 
         const transactionsData = querySnapshot.docs.map((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-          // console.log(doc.id, " => ", doc.data());
           return {
             ...doc.data(),
             id: doc.id,
@@ -51,6 +49,7 @@ function App() {
     fetchTransactions();
   }, []);
 
+  //一月分のデータのみを取得する関数
   const monthlyTransactions = transactions.filter((transaction) => {
     return transaction.date.startsWith(formatMonth(currentMonth));
   });
@@ -64,7 +63,7 @@ function App() {
           <Route path="/" element={<AppLayout />}>
             <Route
               index
-              element={<Home monthlyTransactions={monthlyTransactions} />}
+              element={<Home monthlyTransactions={monthlyTransactions} setCurrentMonth={setCurrentMonth }/>}
             />
             <Route path="/report" element={<Report />} />
             <Route path="*" element={<NoMatch />} />
