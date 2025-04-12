@@ -25,12 +25,14 @@ interface TransactionMenuProps {
   dailyTransactions: Transaction[];
   currentDay: string;
   OnHandleAddTransactionForm: () => void; // 取引追加ボタンのクリックイベントを受け取る
+  onSelectTransaction: (transaction: Transaction) => void; // 取引選択時のイベントを受け取る
 }
 
 const TransactionMenu = ({
   dailyTransactions,
   currentDay,
   OnHandleAddTransactionForm,
+  onSelectTransaction,
 }: TransactionMenuProps) => {
   const menuDrawerWidth = 320;
   return (
@@ -90,6 +92,7 @@ const TransactionMenu = ({
                           ? (theme) => theme.palette.incomeColor.light
                           : (theme) => theme.palette.expenseColor.light,
                     }}
+                    onClick={() => onSelectTransaction(transaction)}
                   >
                     <CardActionArea>
                       <CardContent>

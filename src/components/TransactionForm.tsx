@@ -12,8 +12,8 @@ import {
 import React, { JSX, useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
-import { Controller, useForm } from "react-hook-form";
-import { ExpenseCategory, IncomeCategory } from "../types";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { ExpenseCategory, IncomeCategory, Transaction } from "../types";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import AddHomeIcon from "@mui/icons-material/AddHome";
 import DiversityIcon from "@mui/icons-material/Diversity2";
@@ -24,11 +24,16 @@ import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import SavingsIcon from "@mui/icons-material/Savings";
 import { cu } from "@fullcalendar/core/internal-common";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Scheme, transactionScheme } from "../validations/scheme";
+import { Schema, transactionSchema } from "../validations/Schema";
+// import { Schema } from "zod";
 interface TransactionFormProps {
   onCloseForm: () => void; // 閉じる関数を受け取る
   isEntryDrawerOpen: boolean; // フォームの開閉状態を受け取る
   currentDay: string;
+  onSaveTransaction: (transaction: Schema) => void; // 取引保存関数を受け取る
+  selectedTransaction: Transaction | null;
+  onDeleteTransaction: (transactionId: string) => Promise<void>; // 取引削除関数を受け取る
+  setSelectedTransaction: React.Dispatch<React.SetStateAction<Transaction | null>>; // 取引選択関数を受け取る
 }
 
 type IncomeExpense = "income" | "expense";
@@ -41,6 +46,10 @@ const TransactionForm = ({
   onCloseForm,
   isEntryDrawerOpen,
   currentDay,
+  onSaveTransaction,
+  selectedTransaction,
+  onDeleteTransaction,
+  setSelectedTransaction,
 }: TransactionFormProps) => {
   const formWidth = 320;
 
@@ -67,7 +76,8 @@ const TransactionForm = ({
     watch,
     formState: { errors },
     handleSubmit,
-  } = useForm<Scheme>({
+    reset,
+  } = useForm<Schema>({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -75,11 +85,14 @@ const TransactionForm = ({
       category: "",
       content: "",
     },
-    resolver: zodResolver(transactionScheme), // Zodスキーマを使用してバリデーションを行う
+    resolver: zodResolver(transactionSchema), // Zodスキーマを使用してバリデーションを行う
   });
   console.log("errors:", errors); // エラーをコンソールに表示
+
+  //収支の切り替え処理
   const incomeExpenseToggle = (type: IncomeExpense) => {
     setValue("type", type); // フォームの値を更新
+    setValue("category", ""); // フォームの値を更新
   };
 
   const currentType = watch("type"); // watchを使用して、フォームの値を監視
@@ -93,9 +106,46 @@ const TransactionForm = ({
     setCategories(newCategories); // カテゴリを更新
   }, [currentType]);
 
-  const onSubmit = (data: any) => {
+  //送信処理
+  const onSubmit: SubmitHandler<Schema> = (data) => {
     console.log("Dataerror:", data); // フォームのデータをコンソールに表示
+    onSaveTransaction(data); // データを保存する関数を呼び出す
+
+    reset({
+      type: "expense",
+      date: currentDay,
+      amount: 0,
+      category: "",
+      content: "",
+    }); // フォームをリセット
   };
+
+  useEffect(() => {
+    if (selectedTransaction) {
+      setValue("type", selectedTransaction.type); // フォームの値を更新
+      setValue("date", selectedTransaction.date); // フォームの値を更新
+      setValue("amount", selectedTransaction.amount); // フォームの値を更新
+      setValue("category", selectedTransaction.category); // フォームの値を更新
+      setValue("content", selectedTransaction.content); // フォームの値を更新
+    } else {
+      reset({
+        type: "expense",
+        date: currentDay,
+        amount: 0,
+        category: "",
+        content: "",
+      }); // フォームをリセット
+    }
+  }, [selectedTransaction]);
+
+  // 削除ボタンの処理
+  const handleDelete = () => {
+    if (selectedTransaction) {
+      onDeleteTransaction(selectedTransaction.id);
+      setSelectedTransaction(null); // 選択された取引をリセット
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -238,6 +288,17 @@ const TransactionForm = ({
           >
             保存
           </Button>
+          {/* 削除ボタン */}
+          {selectedTransaction && (
+            <Button
+              onClick={handleDelete}
+              variant="outlined"
+              color={"secondary"}
+              fullWidth
+            >
+              削除
+            </Button>
+          )}
         </Stack>
       </Box>
     </Box>

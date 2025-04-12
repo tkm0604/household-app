@@ -9,10 +9,17 @@ import { theme } from "./theme/theme";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 import { Transaction } from "./types/index";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "./firebase";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { formatMonth } from "./utils/formatting";
+import { Schema } from "./validations/Schema";
 
 //firestoreエラーかどうかを判定する型ガード
 function isFireStoreError(
@@ -24,7 +31,6 @@ function isFireStoreError(
 function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const a = format(currentMonth, "yyyy-MM");
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -54,7 +60,49 @@ function App() {
     return transaction.date.startsWith(formatMonth(currentMonth));
   });
 
-  console.log(monthlyTransactions);
+  //取引を保存する処理
+  const handleSaveTransaction = async (transaction: Schema) => {
+    console.log("保存する取引は:", transaction);
+    try {
+      //firestoreにデータ保存
+      const docRef = await addDoc(collection(db, "Transactions"), transaction);
+      console.log("Document written with ID: ", docRef.id);
+      const newTransaction = {
+        id: docRef.id,
+        ...transaction,
+      } as Transaction;
+      console.log("新しい取引は:", newTransaction);
+      setTransactions((prevTransaction) => [
+        ...prevTransaction,
+        newTransaction,
+      ]);
+    } catch (err) {
+      if (isFireStoreError(err)) {
+        console.error("firestoreのエラーは:", err);
+      } else {
+        console.error("一般的なエラーは:", err);
+      }
+    }
+  };
+
+  const handelDeleteTransaction = async (transactionId: string) => {
+    try {
+      //firestoreからデータ削除
+      await deleteDoc(doc(db, "★Transactions", transactionId));
+      const filteredTransactions = transactions.filter(
+        (transaction) => transaction.id !== transactionId
+      );
+      console.log("削除した取引は:", filteredTransactions);
+      setTransactions(filteredTransactions);
+    } catch (err) {
+      if (isFireStoreError(err)) {
+        console.error("firestoreのエラーは:", err);
+      } else {
+        console.error("一般的なエラーは:", err);
+      }
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -63,7 +111,14 @@ function App() {
           <Route path="/" element={<AppLayout />}>
             <Route
               index
-              element={<Home monthlyTransactions={monthlyTransactions} setCurrentMonth={setCurrentMonth }/>}
+              element={
+                <Home
+                  monthlyTransactions={monthlyTransactions}
+                  setCurrentMonth={setCurrentMonth}
+                  onSaveTransaction={handleSaveTransaction}
+                  onDeleteTransaction={handelDeleteTransaction}
+                />
+              }
             />
             <Route path="/report" element={<Report />} />
             <Route path="*" element={<NoMatch />} />

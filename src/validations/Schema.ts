@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const transactionScheme = z.object({
+export const transactionSchema = z.object({
   type: z.enum(["income", "expense"]),
   date: z.string().min(1, { message: "日付は必須です" }),
   amount: z.number().min(1, { message: "金額は必須です" }),
@@ -19,4 +19,4 @@ export const transactionScheme = z.object({
     }),
 });
 
-export type Scheme = z.infer<typeof transactionScheme>;
+export type Schema = z.infer<typeof transactionSchema>;
