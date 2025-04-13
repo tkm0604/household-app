@@ -14,12 +14,17 @@ interface HomeProps {
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   onSaveTransaction: (transaction: Schema) => Promise<void>;
   onDeleteTransaction: (transactionId: string) => Promise<void>;
+  onUpdateTransaction: (
+    transaction: Schema,
+    transactionId: string
+  ) => Promise<void>;
 }
 const Home = ({
   monthlyTransactions,
   setCurrentMonth,
   onSaveTransaction,
   onDeleteTransaction,
+  onUpdateTransaction,
 }: HomeProps) => {
   const today = format(new Date(), "yyyy-MM-dd");
   const [currentDay, setCurrentDay] = useState(today);
@@ -83,6 +88,7 @@ const Home = ({
           selectedTransaction={selectedTransaction}
           onDeleteTransaction={onDeleteTransaction}
           setSelectedTransaction={setSelectedTransaction}
+          onUpdateTransaction={onUpdateTransaction}
         />
       </Box>
     </Box>
