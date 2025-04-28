@@ -114,9 +114,9 @@ function App() {
       // Set the "capital" field of the city 'DC'
       await updateDoc(docRef, transaction);
       //フロント更新
-     const updatedTransactions = transactions.map((t) =>
+      const updatedTransactions = transactions.map((t) =>
         t.id === transactionId ? { ...t, ...transaction } : t
-     ) as Transaction[];
+      ) as Transaction[];
       console.log("更新した取引は:", updatedTransactions);
       setTransactions(updatedTransactions);
     } catch (err) {
@@ -146,7 +146,15 @@ function App() {
                 />
               }
             />
-            <Route path="/report" element={<Report />} />
+            <Route
+              path="/report"
+              element={
+                <Report
+                  currentMonth={currentMonth}
+                  setCurrentMonth={setCurrentMonth}
+                />
+              }
+            />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>

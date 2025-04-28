@@ -5,10 +5,9 @@ import {
   CardActionArea,
   CardContent,
   Drawer,
-  Grid,
+  Stack,
   List,
   ListItem,
-  Stack,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -96,17 +95,14 @@ const TransactionMenu = ({
                   >
                     <CardActionArea>
                       <CardContent>
-                        <Grid
-                          container
-                          spacing={1}
+                        <Box
+                          display="flex"
+                          flexWrap="wrap"
                           alignItems="center"
-                          wrap="wrap"
+                          gap={1}
                         >
-                          <Grid item xs={1}>
-                            {/* icon */}
-                            {IconComponents[transaction.category]}
-                          </Grid>
-                          <Grid item xs={2.5}>
+                          <Box>{IconComponents[transaction.category]}</Box>
+                          <Box>
                             <Typography
                               variant="caption"
                               display="block"
@@ -114,25 +110,22 @@ const TransactionMenu = ({
                             >
                               {transaction.category}
                             </Typography>
-                          </Grid>
-                          <Grid item xs={4}>
+                          </Box>
+                          <Box>
                             <Typography variant="body2" gutterBottom>
                               {transaction.content}
                             </Typography>
-                          </Grid>
-                          <Grid item xs={4.5}>
+                          </Box>
+                          <Box textAlign="right" flexGrow={1}>
                             <Typography
                               gutterBottom
-                              textAlign={"right"}
                               color="text.secondary"
-                              sx={{
-                                wordBreak: "break-all",
-                              }}
+                              sx={{ wordBreak: "break-all" }}
                             >
                               ¥{formatCurrency(transaction.amount)}
                             </Typography>
-                          </Grid>
-                        </Grid>
+                          </Box>
+                        </Box>
                       </CardContent>
                     </CardActionArea>
                   </Card>
