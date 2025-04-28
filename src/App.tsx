@@ -32,12 +32,13 @@ function isFireStoreError(
 function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
+        setIsLoading(true);
         const querySnapshot = await getDocs(collection(db, "Transactions"));
-
         const transactionsData = querySnapshot.docs.map((doc) => {
           return {
             ...doc.data(),
@@ -51,10 +52,13 @@ function App() {
         } else {
           console.error("一般的なエラーは:", err);
         }
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchTransactions();
   }, []);
+  console.log("setIsLoadingは:", isLoading);
 
   //一月分のデータのみを取得する関数
   const monthlyTransactions = transactions.filter((transaction) => {
@@ -152,6 +156,8 @@ function App() {
                 <Report
                   currentMonth={currentMonth}
                   setCurrentMonth={setCurrentMonth}
+                  monthlyTransactions={monthlyTransactions}
+                  isLoading={isLoading}
                 />
               }
             />

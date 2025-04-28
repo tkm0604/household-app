@@ -5,17 +5,26 @@ import TransactionTable from "../components/TransactionTable";
 import CategoryChart from "../components/CategoryChart";
 import MonthSelector from "../components/MonthSelector";
 import BarChart from "../components/BarChart";
+import { Transaction } from "../types";
 
 interface ReportProps {
   currentMonth: Date;
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+  monthlyTransactions: Transaction[];
+  isLoading: boolean;
 }
 
-const Report = ({ currentMonth, setCurrentMonth }: ReportProps) => {
+const Report = ({
+  currentMonth,
+  setCurrentMonth,
+  monthlyTransactions,
+  isLoading,
+}: ReportProps) => {
   const commonPaperStyle = {
-    height: { xs: "auto", md: "400px" },
+    height: "400px",
     display: "flex",
     flexDirection: "column",
+    p: 2,
   };
 
   return (
@@ -29,12 +38,17 @@ const Report = ({ currentMonth, setCurrentMonth }: ReportProps) => {
       <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
         <Box flex={1}>
           <Paper sx={commonPaperStyle}>
+            {/*円グラフを表示するコンポーネント */}
             <CategoryChart />
           </Paper>
         </Box>
         <Box flex={2}>
           <Paper sx={commonPaperStyle}>
-            <BarChart />
+            {/*棒グラフを表示するコンポーネント */}
+            <BarChart
+              monthlyTransactions={monthlyTransactions}
+              isLoading={isLoading}
+            />
           </Paper>
         </Box>
       </Box>

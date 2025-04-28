@@ -30,7 +30,7 @@ const Calendar = ({
   const events = [{ title: "Meeting", start: new Date() }];
   //1.各日付の収支を計算する関数
   const dailyBalances = calculateDailyBalances(monthlyTransactions);
-
+  //console.log("dailyBalancesは:", dailyBalances);
   //2.FullCalendarに表示するイベントを作成する関数
   const createCalendarEvents = (
     dailyBalances: Record<string, Balance>
