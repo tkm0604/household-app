@@ -39,7 +39,10 @@ const Report = ({
         <Box flex={1}>
           <Paper sx={commonPaperStyle}>
             {/*円グラフを表示するコンポーネント */}
-            <CategoryChart />
+            <CategoryChart
+              monthlyTransactions={monthlyTransactions}
+              isLoading={isLoading}
+            />
           </Paper>
         </Box>
         <Box flex={2}>

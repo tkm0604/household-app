@@ -37,9 +37,6 @@ const BarChart = ({ monthlyTransactions, isLoading }: BarChartProps) => {
     maintainAspectRatio: false,
     responsive: true,
     plugins: {
-      // legend: {
-      //   position: "top" as const,
-      // },
       title: {
         display: true,
         text: "日別収支",
