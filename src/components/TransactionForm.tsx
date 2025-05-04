@@ -33,7 +33,7 @@ interface TransactionFormProps {
   currentDay: string;
   onSaveTransaction: (transaction: Schema) => void; // 取引保存関数を受け取る
   selectedTransaction: Transaction | null;
-  onDeleteTransaction: (transactionId: string) => Promise<void>; // 取引削除関数を受け取る
+  onDeleteTransaction: (transactionId: string | readonly string[]) => Promise<void>; // 取引削除関数を受け取る
   setSelectedTransaction: React.Dispatch<
     React.SetStateAction<Transaction | null>
   >; // 取引選択関数を受け取る
