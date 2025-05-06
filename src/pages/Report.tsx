@@ -7,23 +7,25 @@ import MonthSelector from "../components/MonthSelector";
 import BarChart from "../components/BarChart";
 import { Transaction } from "../types";
 
-interface ReportProps {
-  currentMonth: Date;
-  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
-  monthlyTransactions: Transaction[];
-  isLoading: boolean;
-  onDeleteTransaction: (
-    transactionId: string | readonly string[]
-  ) => Promise<void>;
-}
+// interface ReportProps {
+//   currentMonth: Date;
+//   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+//   monthlyTransactions: Transaction[];
+//   isLoading: boolean;
+//   onDeleteTransaction: (
+//     transactionId: string | readonly string[]
+//   ) => Promise<void>;
+// }
 
-const Report = ({
-  currentMonth,
-  setCurrentMonth,
-  monthlyTransactions,
-  isLoading,
-  onDeleteTransaction,
-}: ReportProps) => {
+const Report = (
+//   {
+//   currentMonth,
+//   setCurrentMonth,
+//   monthlyTransactions,
+//   isLoading,
+//   onDeleteTransaction,
+// }: ReportProps
+) => {
   const commonPaperStyle = {
     height: "400px",
     display: "flex",
@@ -35,8 +37,8 @@ const Report = ({
     <Box display="flex" flexDirection="column" gap={2}>
       <Box>
         <MonthSelector
-          currentMonth={currentMonth}
-          setCurrentMonth={setCurrentMonth}
+          // currentMonth={currentMonth}
+          // setCurrentMonth={setCurrentMonth}
         />
       </Box>
       <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
@@ -44,8 +46,8 @@ const Report = ({
           <Paper sx={commonPaperStyle}>
             {/*円グラフを表示するコンポーネント */}
             <CategoryChart
-              monthlyTransactions={monthlyTransactions}
-              isLoading={isLoading}
+              // monthlyTransactions={monthlyTransactions}
+              // isLoading={isLoading}
             />
           </Paper>
         </Box>
@@ -53,16 +55,16 @@ const Report = ({
           <Paper sx={commonPaperStyle}>
             {/*棒グラフを表示するコンポーネント */}
             <BarChart
-              monthlyTransactions={monthlyTransactions}
-              isLoading={isLoading}
+              // monthlyTransactions={monthlyTransactions}
+              // isLoading={isLoading}
             />
           </Paper>
         </Box>
       </Box>
       <Box>
         <TransactionTable
-          monthlyTransactions={monthlyTransactions}
-          onDeleteTransaction={onDeleteTransaction}
+          // monthlyTransactions={monthlyTransactions}
+          // onDeleteTransaction={onDeleteTransaction}
         />
       </Box>
     </Box>

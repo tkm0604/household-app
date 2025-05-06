@@ -19,13 +19,14 @@ import DailySummary from "./DailySummary";
 import { Transaction } from "../types";
 import { formatCurrency } from "../utils/formatting";
 import IconComponents from "./common/IconComponents";
+import { useAppContext } from "../context/AppContext";
 
 interface TransactionMenuProps {
   dailyTransactions: Transaction[];
   currentDay: string;
   OnHandleAddTransactionForm: () => void; // 取引追加ボタンのクリックイベントを受け取る
   onSelectTransaction: (transaction: Transaction) => void; // 取引選択時のイベントを受け取る
-  isMobile: boolean; // モバイルかどうかのフラグ
+  // isMobile: boolean; // モバイルかどうかのフラグ
   open: boolean; // ドロワーの開閉状態を管理するフラグ
   onClose: () => void; // ドロワーを閉じるための関数
 }
@@ -35,10 +36,11 @@ const TransactionMenu = ({
   currentDay,
   OnHandleAddTransactionForm,
   onSelectTransaction,
-  isMobile,
+  // isMobile,
   open,
   onClose,
 }: TransactionMenuProps) => {
+  const {isMobile } = useAppContext();
   const menuDrawerWidth = 320;
   return (
     <Drawer

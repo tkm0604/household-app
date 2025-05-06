@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { JSX, use, useEffect, useState } from "react";
+import React, { JSX, use, useContext, useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -28,24 +28,25 @@ import { cu } from "@fullcalendar/core/internal-common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Schema, transactionSchema } from "../validations/Schema";
 import { set } from "date-fns";
+import { AppContext, useAppContext } from "../context/AppContext";
 // import { Schema } from "zod";
 interface TransactionFormProps {
   onCloseForm: () => void; // 閉じる関数を受け取る
   isEntryDrawerOpen: boolean; // フォームの開閉状態を受け取る
   currentDay: string;
-  onSaveTransaction: (transaction: Schema) => void; // 取引保存関数を受け取る
+  // onSaveTransaction: (transaction: Schema) => void; // 取引保存関数を受け取る
   selectedTransaction: Transaction | null;
-  onDeleteTransaction: (
-    transactionId: string | readonly string[]
-  ) => Promise<void>; // 取引削除関数を受け取る
+  // onDeleteTransaction: (
+  //   transactionId: string | readonly string[]
+  // ) => Promise<void>; // 取引削除関数を受け取る
   setSelectedTransaction: React.Dispatch<
     React.SetStateAction<Transaction | null>
   >; // 取引選択関数を受け取る
-  onUpdateTransaction: (
-    transaction: Schema,
-    transactionId: string
-  ) => Promise<void>;
-  isMobile: boolean; // モバイルかどうかのフラグ
+  // onUpdateTransaction: (
+  //   transaction: Schema,
+  //   transactionId: string
+  // ) => Promise<void>;
+  // isMobile: boolean; // モバイルかどうかのフラグ
   isDialogOpen: boolean; // ダイアログの開閉状態を受け取る
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -60,15 +61,21 @@ const TransactionForm = ({
   onCloseForm,
   isEntryDrawerOpen,
   currentDay,
-  onSaveTransaction,
+  // onSaveTransaction,
   selectedTransaction,
-  onDeleteTransaction,
+  // onDeleteTransaction,
   setSelectedTransaction,
-  onUpdateTransaction,
-  isMobile,
+  // onUpdateTransaction,
+  // isMobile,
   isDialogOpen,
   setIsDialogOpen,
 }: TransactionFormProps) => {
+  const {
+    isMobile,
+    onSaveTransaction,
+    onDeleteTransaction,
+    onUpdateTransaction,
+  } = useAppContext(); // AppContextから値を取得
   const formWidth = 320;
 
   const expenseCategories: CategoryItem[] = [
@@ -125,7 +132,6 @@ const TransactionForm = ({
 
   //送信処理
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    console.log("Dataerror:", data); // フォームのデータをコンソールに表示
     if (selectedTransaction) {
       onUpdateTransaction(data, selectedTransaction.id) // 更新処理
         .then(() => {

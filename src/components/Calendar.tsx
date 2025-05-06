@@ -11,23 +11,27 @@ import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { theme } from "../theme/theme";
 import { useTheme } from "@mui/material";
 import { isSameMonth, set } from "date-fns";
+import useMonthlyTransactions from "../hooks/useMonthlyTransactions";
+import { useAppContext } from "../context/AppContext";
 
 interface CalendarProps {
-  monthlyTransactions: Transaction[];
-  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+  // monthlyTransactions: Transaction[];
+  // setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
   currentDay: string;
   today: string;
   onDateClick: (dateInfo: DateClickArg) => void;
 }
 const Calendar = ({
-  monthlyTransactions,
-  setCurrentMonth,
+  // monthlyTransactions,
+  // setCurrentMonth,
   setCurrentDay,
   currentDay,
   today,
   onDateClick,
 }: CalendarProps) => {
+  const monthlyTransactions = useMonthlyTransactions();
+  const { setCurrentMonth } = useAppContext();
   const theme = useTheme();
   const events = [{ title: "Meeting", start: new Date() }];
   //1.各日付の収支を計算する関数
