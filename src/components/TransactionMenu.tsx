@@ -25,6 +25,9 @@ interface TransactionMenuProps {
   currentDay: string;
   OnHandleAddTransactionForm: () => void; // 取引追加ボタンのクリックイベントを受け取る
   onSelectTransaction: (transaction: Transaction) => void; // 取引選択時のイベントを受け取る
+  isMobile: boolean; // モバイルかどうかのフラグ
+  open: boolean; // ドロワーの開閉状態を管理するフラグ
+  onClose: () => void; // ドロワーを閉じるための関数
 }
 
 const TransactionMenu = ({
@@ -32,28 +35,48 @@ const TransactionMenu = ({
   currentDay,
   OnHandleAddTransactionForm,
   onSelectTransaction,
+  isMobile,
+  open,
+  onClose,
 }: TransactionMenuProps) => {
   const menuDrawerWidth = 320;
   return (
     <Drawer
       sx={{
-        width: menuDrawerWidth,
+        width: isMobile ? "auto" : menuDrawerWidth,
         "& .MuiDrawer-paper": {
-          width: menuDrawerWidth,
+          width: isMobile ? "auto" : menuDrawerWidth,
           boxSizing: "border-box",
           p: 2,
-          top: 64,
-          height: `calc(100% - 64px)`, // AppBarの高さを引いたビューポートの高さ
+          ...(isMobile && {
+            height: "80vh",
+            borderTopRightRadius: 8,
+            borderTopLeftRadius: 8,
+          }),
+          ...(!isMobile && {
+            top: 64,
+            height: `calc(100% - 64px)`, // AppBarの高さを引いたビューポートの高さ
+          }),
         },
       }}
-      variant={"permanent"}
-      anchor={"right"}
+      variant={isMobile ? "temporary" : "permanent"}
+      anchor={isMobile ? "bottom" : "right"}
+      open={open}
+      onClose={onClose}
+      slotProps={{
+        root: {
+          keepMounted: true, // Better open performance on mobile.
+        },
+      }}
     >
       <Stack sx={{ height: "100%" }} spacing={2}>
         <Typography fontWeight={"fontWeightBold"}>
           日時：{currentDay}
         </Typography>
-        <DailySummary dailyTransactions={dailyTransactions} />
+        <DailySummary
+          dailyTransactions={dailyTransactions}
+          columns={isMobile ? 3 : 2}
+        />
         {/* 内訳タイトル&内訳追加ボタン */}
         <Box
           sx={{

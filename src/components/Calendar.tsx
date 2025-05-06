@@ -18,6 +18,7 @@ interface CalendarProps {
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
   currentDay: string;
   today: string;
+  onDateClick: (dateInfo: DateClickArg) => void;
 }
 const Calendar = ({
   monthlyTransactions,
@@ -25,6 +26,7 @@ const Calendar = ({
   setCurrentDay,
   currentDay,
   today,
+  onDateClick,
 }: CalendarProps) => {
   const theme = useTheme();
   const events = [{ title: "Meeting", start: new Date() }];
@@ -79,11 +81,6 @@ const Calendar = ({
     }
   };
 
-  //日付を選択した時の処理
-  const handleDateClick = (dateInfo: DateClickArg) => {
-    setCurrentDay(dateInfo.dateStr);
-  };
-
   return (
     <FullCalendar
       locale={"jaLocale"}
@@ -92,7 +89,7 @@ const Calendar = ({
       events={[...calendarEvents, backgroundEvent]}
       eventContent={renderEventContent}
       datesSet={handleDateSet}
-      dateClick={handleDateClick}
+      dateClick={onDateClick}
     />
   );
 };
