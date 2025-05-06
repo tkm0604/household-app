@@ -59,6 +59,7 @@ const Home = () =>
       if (isMobile) {
         setIsDialogOpen(!isDialogOpen);
       } else {
+        setIsEntryDrawerOpen(!isEntryDrawerOpen);
         setIsDialogOpen(!isEntryDrawerOpen);
       }
     };
